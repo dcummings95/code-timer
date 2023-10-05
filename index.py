@@ -17,12 +17,22 @@ class CodingTimerApp:
         self.timer_label = tk.Label(root, textvariable=self.timer_var, font=("Arial", 24))
         self.timer_label.pack(pady=20)
         
-        # Start and Stop buttons
+        # Start, Stop, Save and Reset buttons
         self.start_button = tk.Button(root, text="Start", command=self.start_timer, bg="green", fg="white")
-        self.start_button.pack(side="left", padx=20)
+        self.start_button.pack(side="left", padx=10)
         
         self.stop_button = tk.Button(root, text="Stop", command=self.stop_timer, bg="red", fg="white")
-        self.stop_button.pack(side="right", padx=20)
+        self.stop_button.pack(side="left", padx=10)
+        
+        self.save_button = tk.Button(root, text="Save", command=self.save_time, bg="blue", fg="white")
+        self.save_button.pack(side="left", padx=10)
+        
+        self.reset_button = tk.Button(root, text="Reset", command=self.reset_timer, bg="orange", fg="white")
+        self.reset_button.pack(side="left", padx=10)
+        
+        # Listbox for saved sessions and comments
+        self.log_listbox = tk.Listbox(root, width=50, height=10)
+        self.log_listbox.pack(pady=20)
         
         # To periodically update the timer display when it's running
         self.update_timer()
@@ -43,6 +53,19 @@ class CodingTimerApp:
             self.start_time = None
             self.update_display()
             
+    def save_time(self):
+        # Save the current elapsed time and provide an entry for comments
+        self.log_listbox.insert(tk.END, f"{self.timer_var.get()} - Comment:")
+        comment_entry = tk.Entry(self.log_listbox, width=20)
+        self.log_listbox.window_create(tk.END, window=comment_entry)
+        comment_entry.focus_set()
+
+    def reset_timer(self):
+        # Reset the timer to zero
+        self.elapsed_time = timedelta(0)
+        self.update_display()
+        self.start_time = None
+        
     def update_timer(self):
         # If the timer is running, update the display every second
         if self.start_time:
